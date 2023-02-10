@@ -56,7 +56,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
 
                     outputs = model(inputs)
                     loss = criterion(outputs['out'], masks)
-                    print('loss: ', loss, loss.item())
+                    print('loss: ', loss, loss.item(), loss[0])
                     if phase == 'Train':
                         total_train_loss += loss.item()
                     else:
@@ -82,7 +82,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
 
                 # backward + optimize only if in training phase
                 if phase == 'Train':
-                    loss.item() = mean_train_loss
+                    loss = mean_train_loss
                     loss.backward()
                     optimizer.step()   
                     
