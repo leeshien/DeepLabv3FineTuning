@@ -53,9 +53,9 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                     loss = criterion(outputs['out'], masks)
                     print('loss: ', loss, loss.item())
                     if phase == 'Train':
-                        total_train_loss += loss
+                        total_train_loss += loss.item()
                     else:
-                        total_val_loss += loss
+                        total_val_loss += loss.item()
                     y_pred = outputs['out'].data.cpu().numpy().ravel()
                     y_true = masks.data.cpu().numpy().ravel()
 
@@ -68,7 +68,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true.astype('uint8'), y_pred))
                             
-                    del inputs, masks, outputs
+                    del inputs, masks, outputs, loss
                     del y_pred, y_true
                     gc.collect()
 
@@ -81,8 +81,8 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                     optimizer.step()   
                     
             batchsummary['epoch'] = epoch
-            batchsummary[f'train_loss'] = mean_train_loss.item()
-            batchsummary[f'val_loss'] = mean_val_loss.item()
+            batchsummary[f'train_loss'] = mean_train_loss
+            batchsummary[f'val_loss'] = mean_val_loss
             print('epoch: {},  train_loss: {:.4f},  val_loss: {:.4f}'.format(epoch, mean_train_loss, mean_val_loss))
         for field in fieldnames[3:]:
             batchsummary[field] = np.mean(batchsummary[field])
