@@ -40,7 +40,13 @@ def get_dataloader_sep_folder(train_data_dir: str,
         dataloaders: Returns dataloaders dictionary containing the
         Train and Test dataloaders.
     """
-    data_transforms = transforms.Compose([transforms.ToTensor()])
+    data_transforms = transforms.Compose(
+      [
+        transforms.ToTensor(),
+        transforms.Resize(800)
+      ]
+    )
+
 
     image_datasets = {
         tag: SegmentationDataset(root=Path(data_dir) / tag,
@@ -53,7 +59,8 @@ def get_dataloader_sep_folder(train_data_dir: str,
         tag: DataLoader(image_datasets[tag],
                       batch_size=batch_size,
                       shuffle=True,
-                      num_workers=8)
+                      num_workers=8
+                      drop_last=True)
         for tag in zip(['Train', 'Test'], [train_data_dir, test_data_dir])
     }
     return dataloaders
