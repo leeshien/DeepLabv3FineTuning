@@ -49,7 +49,7 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
 
     # Specify the loss function
     # criterion = torch.nn.MSELoss(reduction='mean')
-    criterion = torch.nn.CrossEntropyLoss(reduction='mean')
+    criterion = torch.nn.CrossEntropyLoss(reduction='sum')
     # Specify the optimizer with a lower learning rate
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
