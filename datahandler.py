@@ -6,7 +6,8 @@ from torchvision import transforms
 from segdataset import SegmentationDataset
 
 
-def get_dataloader_sep_folder(data_dir: str,
+def get_dataloader_sep_folder(train_data_dir: str,
+                              test_data_dir: str,
                               image_folder: str = 'Image',
                               mask_folder: str = 'Mask',
                               batch_size: int = 4):
@@ -42,18 +43,18 @@ def get_dataloader_sep_folder(data_dir: str,
     data_transforms = transforms.Compose([transforms.ToTensor()])
 
     image_datasets = {
-        x: SegmentationDataset(root=Path(data_dir) / x,
+        tag: SegmentationDataset(root=Path(data_dir) / tag,
                                transforms=data_transforms,
                                image_folder=image_folder,
                                mask_folder=mask_folder)
-        for x in ['Train', 'Test']
+        for tag in zip(['Train', 'Test'], [train_data_dir, test_data_dir])
     }
     dataloaders = {
-        x: DataLoader(image_datasets[x],
+        tag: DataLoader(image_datasets[tag],
                       batch_size=batch_size,
                       shuffle=True,
                       num_workers=8)
-        for x in ['Train', 'Test']
+        for tag in zip(['Train', 'Test'], [train_data_dir, test_data_dir])
     }
     return dataloaders
 
@@ -80,20 +81,20 @@ def get_dataloader_single_folder(data_dir: str,
     data_transforms = transforms.Compose([transforms.ToTensor()])
 
     image_datasets = {
-        x: SegmentationDataset(data_dir,
+        tag: SegmentationDataset(data_dir,
                                image_folder=image_folder,
                                mask_folder=mask_folder,
                                seed=100,
                                fraction=fraction,
-                               subset=x,
+                               subset=tag,
                                transforms=data_transforms)
-        for x in ['Train', 'Test']
+        for tag in ['Train', 'Test']
     }
     dataloaders = {
-        x: DataLoader(image_datasets[x],
+        tag: DataLoader(image_datasets[tag],
                       batch_size=batch_size,
                       shuffle=True,
                       num_workers=8)
-        for x in ['Train', 'Test']
+        for tag in ['Train', 'Test']
     }
     return dataloaders
