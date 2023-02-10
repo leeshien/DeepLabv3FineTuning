@@ -99,7 +99,8 @@ def get_dataloader_single_folder(data_dir: str,
         tag: DataLoader(image_datasets[tag],
                       batch_size=batch_size,
                       shuffle=True,
-                      num_workers=8)
+                      num_workers=8,
+                      drop_last=True)
         for tag in ['Train', 'Test']
     }
     return dataloaders
