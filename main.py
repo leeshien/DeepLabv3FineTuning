@@ -15,8 +15,8 @@ from trainer import train_model
               required=True,
               help="Specify the main train data directory.")
 @click.option("--test-data-directory",
-              required=True,
-              help="Specify the main test data directory.")
+              default='',
+              help="[Optional] Specify the main test data directory.")
 @click.option("--image-folder",
               required=True,
               help="Specify the image folder name.")
@@ -40,8 +40,8 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
     # of COCO train2017, on the 20 categories that are present in the Pascal VOC dataset.
     model = createDeepLabv3()
     model.train()
-    train_data_directory = Path(train_data_directory)
-    test_data_directory = Path(test_data_directory)
+#     train_data_directory = Path(train_data_directory)
+#     test_data_directory = Path(test_data_directory)
     # Create the experiment directory if not present
     exp_directory = Path(exp_directory)
     if not exp_directory.exists():
@@ -57,8 +57,13 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
     metrics = {'f1_score': f1_score, 'auroc': roc_auc_score}
 
     # Create the dataloader
-    dataloaders = datahandler.get_dataloader_single_folder(
-        train_data_directory, test_data_directory, image_folder, mask_folder, batch_size=batch_size)
+    if test_data_directory:
+      dataloaders = datahandler.get_dataloader_sep_folder(
+          train_data_directory, test_data_directory, image_folder, mask_folder, batch_size=batch_size)
+    else:
+      dataloaders = datahandler.get_dataloader_single_folder(
+          train_data_directory, image_folder, mask_folder, batch_size=batch_size)
+      
     _ = train_model(model,
                     criterion,
                     dataloaders,
