@@ -50,7 +50,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
 
                     outputs = model(inputs)
                     loss = criterion(outputs['out'], masks)
-                    print('loss: ', loss)
+                    print('loss: ', loss, loss.item())
                     if phase == 'Train':
                         total_train_loss += loss
                     else:
