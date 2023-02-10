@@ -85,5 +85,5 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
     print('Lowest Loss: {:4f}'.format(best_loss))
 
     # load best model weights
-    model.load_state_dict(best_model_wts)
+    # model.load_state_dict(best_model_wts)
     return model
