@@ -12,7 +12,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 num_epochs):
     since = time.time()
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_loss = 1e10
+    best_val_loss = 1e10
     # Use gpu if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -37,19 +37,26 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
             else:
                 model.eval()  # Set model to evaluate mode
 
-            # Iterate over data.
-            for sample in tqdm(iter(dataloaders[phase])):
-                inputs = sample['image'].to(device)
-                masks = sample['mask'].to(device)
+            # track history if only in train
+            with torch.set_grad_enabled(phase == 'Train'):
                 # zero the parameter gradients
                 optimizer.zero_grad()
+                # Iterate over data.
+                total_train_loss, total_val_loss = 0,0
+                for sample in tqdm(iter(dataloaders[phase])):
+                    inputs = sample['image'].to(device)
+                    masks = sample['mask'].to(device)
 
-                # track history if only in train
-                with torch.set_grad_enabled(phase == 'Train'):
                     outputs = model(inputs)
                     loss = criterion(outputs['out'], masks)
+                    print('loss: ', loss)
+                    if phase == 'Train':
+                        total_train_loss += loss
+                    else:
+                        total_val_loss += loss
                     y_pred = outputs['out'].data.cpu().numpy().ravel()
                     y_true = masks.data.cpu().numpy().ravel()
+
                     for name, metric in metrics.items():
                         if name == 'f1_score':
                             # Use a classification threshold of 0.1
@@ -59,14 +66,18 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true.astype('uint8'), y_pred))
 
-                    # backward + optimize only if in training phase
-                    if phase == 'Train':
-                        loss.backward()
-                        optimizer.step()
+                mean_train_loss = np.mean(total_train_loss)
+                mean_val_loss = np.mean(total_val_loss)
+
+                # backward + optimize only if in training phase
+                if phase == 'Train':
+                    mean_train_loss.backward()
+                    optimizer.step()   
+                    
             batchsummary['epoch'] = epoch
-            epoch_loss = loss
-            batchsummary[f'{phase}_loss'] = epoch_loss.item()
-            print('{} Loss: {:.4f}'.format(phase, loss))
+            batchsummary[f'train_loss'] = mean_train_loss.item()
+            batchsummary[f'val_loss'] = mean_val_loss.item()
+            print('epoch: {},  train_loss: {:.4f},  val_loss: {:.4f}'.format(epoch, mean_train_loss, mean_val_loss))
         for field in fieldnames[3:]:
             batchsummary[field] = np.mean(batchsummary[field])
         print(batchsummary)
@@ -74,8 +85,8 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(batchsummary)
             # deep copy the model
-            if phase == 'Test' and loss < best_loss:
-                best_loss = loss
+            if phase == 'Test' and mean_val_loss < best_val_loss:
+                best_val_loss = mean_val_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
                 torch.save(model, f"{bpath}/ep{epoch:03d}_loss{best_loss:.4f}.pt")
                 
