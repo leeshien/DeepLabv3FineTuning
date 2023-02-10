@@ -2,6 +2,7 @@ import copy
 import csv
 import os
 import time
+import gc
 
 import numpy as np
 import torch
@@ -66,6 +67,10 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                         else:
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true.astype('uint8'), y_pred))
+                            
+                    del inputs, masks, outputs
+                    del y_pred, y_true
+                    gc.collect()
 
                 mean_train_loss = np.mean(total_train_loss)
                 mean_val_loss = np.mean(total_val_loss)
