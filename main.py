@@ -38,7 +38,8 @@ def main(data_directory, exp_directory, epochs, batch_size):
         exp_directory.mkdir()
 
     # Specify the loss function
-    criterion = torch.nn.MSELoss(reduction='mean')
+    # criterion = torch.nn.MSELoss(reduction='mean')
+    criterion = torch.nn.CrossEntropyLoss(reduction='mean')
     # Specify the optimizer with a lower learning rate
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
@@ -57,7 +58,7 @@ def main(data_directory, exp_directory, epochs, batch_size):
                     num_epochs=epochs)
 
     # Save the trained model
-    torch.save(model, exp_directory / 'weights.pt')
+    torch.save(model, exp_directory / 'final.pt')
 
 
 if __name__ == "__main__":
