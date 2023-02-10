@@ -45,7 +45,12 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 optimizer.zero_grad()
                 # Iterate over data.
                 total_train_loss, total_val_loss = 0,0
-                for sample in tqdm(iter(dataloaders[phase])):
+                for batch_no,sample in enumerate(tqdm(iter(dataloaders[phase]))):
+                    try:
+                        del loss
+                    except:
+                        pass
+                      
                     inputs = sample['image'].to(device)
                     masks = sample['mask'].to(device)
 
@@ -68,7 +73,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                             batchsummary[f'{phase}_{name}'].append(
                                 metric(y_true.astype('uint8'), y_pred))
                             
-                    del inputs, masks, outputs, loss
+                    del inputs, masks, outputs
                     del y_pred, y_true
                     gc.collect()
 
@@ -77,7 +82,8 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
 
                 # backward + optimize only if in training phase
                 if phase == 'Train':
-                    mean_train_loss.backward()
+                    loss.item() = mean_train_loss
+                    loss.backward()
                     optimizer.step()   
                     
             batchsummary['epoch'] = epoch
