@@ -107,7 +107,7 @@ def get_dataloader_single_folder(data_dir: str,
                       batch_size=batch_size,
                       shuffle=True,
                       num_workers=8,
-                      drop_last=True)
+                      drop_last=False)
         for tag in ['Train', 'Test']
     }
     return dataloaders
