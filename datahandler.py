@@ -88,7 +88,7 @@ def get_dataloader_single_folder(data_dir: str,
     data_transforms = transforms.Compose(
       [
         transforms.ToTensor(),
-        transforms.Resize([480,480])
+        transforms.Resize([224,224])
       ]
     )
 
