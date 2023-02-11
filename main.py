@@ -26,6 +26,9 @@ from trainer import train_model
 @click.option("--exp_directory",
               required=True,
               help="Specify the experiment directory.")
+@click.option("--input_size",
+              required=True,
+              help="Specify the input size.")
 @click.option(
     "--epochs",
     default=25,
@@ -46,6 +49,11 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
     exp_directory = Path(exp_directory)
     if not exp_directory.exists():
         exp_directory.mkdir()
+        
+    try:
+        input_size = int(input_size)
+    except:
+        input_size = list(input_size)
 
     # Specify the loss function
     criterion = torch.nn.MSELoss(reduction='mean')
@@ -59,10 +67,10 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
     # Create the dataloader
     if test_data_directory:
       dataloaders = datahandler.get_dataloader_sep_folder(
-          train_data_directory, test_data_directory, image_folder, mask_folder, batch_size=batch_size)
+          train_data_directory, test_data_directory, image_folder, mask_folder, batch_size=batch_size, input_size=input_size)
     else:
       dataloaders = datahandler.get_dataloader_single_folder(
-          train_data_directory, image_folder, mask_folder, batch_size=batch_size)
+          train_data_directory, image_folder, mask_folder, batch_size=batch_size, input_size=input_size)
       
     _ = train_model(model,
                     criterion,
