@@ -83,12 +83,13 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
             if phase == 'Test' and loss < best_loss:
                 best_loss = loss
                 best_model_wts = copy.deepcopy(model.state_dict())
-
+                torch.save(model, f"{bpath}/ep{epoch:03d}_loss{best_loss:.4f}.pt")
+                
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))
     print('Lowest Loss: {:4f}'.format(best_loss))
 
     # load best model weights
-    model.load_state_dict(best_model_wts)
+#     model.load_state_dict(best_model_wts)
     return model
