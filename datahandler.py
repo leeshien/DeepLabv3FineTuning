@@ -10,7 +10,8 @@ def get_dataloader_sep_folder(train_data_dir: str,
                               test_data_dir: str,
                               image_folder: str = 'Image',
                               mask_folder: str = 'Mask',
-                              batch_size: int = 4):
+                              batch_size: int = 4,
+                              input_size = [480,480]):
     """ Create Train and Test dataloaders from two
         separate Train and Test folders.
         The directory structure should be as follows.
@@ -43,7 +44,7 @@ def get_dataloader_sep_folder(train_data_dir: str,
     data_transforms = transforms.Compose(
       [
         transforms.ToTensor(),
-        transforms.Resize(800)
+        transforms.Resize(input_size)
       ]
     )
 
@@ -88,7 +89,7 @@ def get_dataloader_single_folder(data_dir: str,
     data_transforms = transforms.Compose(
       [
         transforms.ToTensor(),
-        transforms.Resize([224,224])
+        transforms.Resize(input_size)
       ]
     )
 
