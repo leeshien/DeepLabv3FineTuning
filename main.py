@@ -38,7 +38,7 @@ from trainer import train_model
               default=4,
               type=int,
               help="Specify the batch size for the dataloader.")
-def main(train_data_directory, test_data_directory, image_folder, mask_folder, exp_directory, epochs, batch_size):
+def main(train_data_directory, test_data_directory, image_folder, mask_folder, exp_directory, epochs, batch_size, input_size):
     # Create the deeplabv3 resnet101 model which is pretrained on a subset
     # of COCO train2017, on the 20 categories that are present in the Pascal VOC dataset.
     model = createDeepLabv3()
