@@ -2,6 +2,7 @@ import copy
 import csv
 import os
 import time
+import gc
 
 import numpy as np
 import torch
@@ -67,6 +68,10 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                         loss.backward()
                         optimizer.step()
                         
+                    del inputs, masks, outputs
+                    del y_pred, y_true
+                    gc.collect()
+                    
                 total_batch += 1
                   
             batchsummary['epoch'] = epoch
