@@ -29,16 +29,18 @@ from trainer import train_model
 @click.option("--input_size",
               required=True,
               help="Specify the input size.")
-@click.option(
-    "--epochs",
-    default=25,
-    type=int,
-    help="Specify the number of epochs you want to run the experiment for.")
+@click.option("--gpu_device",
+              default='0',
+              help="[Optional] Specify which GPU to use, default='0'.")
+@click.option("--epochs",
+              default=25,
+              type=int,
+              help="Specify the number of epochs you want to run the experiment for.")
 @click.option("--batch-size",
               default=4,
               type=int,
               help="Specify the batch size for the dataloader.")
-def main(train_data_directory, test_data_directory, image_folder, mask_folder, exp_directory, epochs, batch_size, input_size):
+def main(train_data_directory, test_data_directory, image_folder, mask_folder, exp_directory, epochs, batch_size, input_size, gpu_device):
     # Create the deeplabv3 resnet101 model which is pretrained on a subset
     # of COCO train2017, on the 20 categories that are present in the Pascal VOC dataset.
     model = createDeepLabv3()
@@ -75,7 +77,8 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
                     optimizer,
                     bpath=exp_directory,
                     metrics=metrics,
-                    num_epochs=epochs)
+                    num_epochs=epochs.
+                    device=gpu_device)
 
     # Save the trained model
     torch.save(model, exp_directory / 'final.pt')
