@@ -54,6 +54,7 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
         input_size = int(input_size)
     except:
         input_size = list(input_size)
+    print('input_size: ', type(input_size), input_size)
 
     # Specify the loss function
     criterion = torch.nn.MSELoss(reduction='mean')
