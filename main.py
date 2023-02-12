@@ -50,11 +50,7 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
     if not exp_directory.exists():
         exp_directory.mkdir()
         
-    try:
-        input_size = int(input_size)
-    except:
-        input_size = list(input_size)
-    print('input_size: ', type(input_size), input_size)
+    input_size = eval(input_size)
 
     # Specify the loss function
     criterion = torch.nn.MSELoss(reduction='mean')
