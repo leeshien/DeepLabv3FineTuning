@@ -77,7 +77,7 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
                     optimizer,
                     bpath=exp_directory,
                     metrics=metrics,
-                    num_epochs=epochs.
+                    num_epochs=epochs,
                     device=gpu_device)
 
     # Save the trained model
