@@ -55,39 +55,39 @@ def main(train_data_directory, test_data_directory, image_folder, mask_folder, e
 
 
 if __name__ == "__main__":
-@click.command()
-@click.option("--train-data-directory",
-              required=True,
-              help="Specify the main train data directory.")
-@click.option("--test-data-directory",
-              default='',
-              help="[Optional] Specify the main test data directory.")
-@click.option("--image-folder",
-              required=True,
-              help="Specify the image folder name.")
-@click.option("--mask-folder",
-              required=True,
-              help="Specify the mask folder name.")
-@click.option("--exp_directory",
-              required=True,
-              help="Specify the experiment directory.")
-@click.option("--input_size",
-              required=True,
-              help="Specify the input size.")
-@click.option("--backbone",
-              required=True,
-              help="Specify the model backbone [mobilenetv3, resnet50, resnet101].")
-@click.option("--gpu_device",
-              default='0',
-              help="[Optional] Specify which GPU to use, default='0'.")
-@click.option("--epochs",
-              default=25,
-              type=int,
-              help="Specify the number of epochs you want to run the experiment for.")
-@click.option("--batch-size",
-              default=4,
-              type=int,
-              help="Specify the batch size for the dataloader.")
+    @click.command()
+    @click.option("--train-data-directory",
+                  required=True,
+                  help="Specify the main train data directory.")
+    @click.option("--test-data-directory",
+                  default='',
+                  help="[Optional] Specify the main test data directory.")
+    @click.option("--image-folder",
+                  required=True,
+                  help="Specify the image folder name.")
+    @click.option("--mask-folder",
+                  required=True,
+                  help="Specify the mask folder name.")
+    @click.option("--exp_directory",
+                  required=True,
+                  help="Specify the experiment directory.")
+    @click.option("--input_size",
+                  required=True,
+                  help="Specify the input size.")
+    @click.option("--backbone",
+                  required=True,
+                  help="Specify the model backbone [mobilenetv3, resnet50, resnet101].")
+    @click.option("--gpu_device",
+                  default='0',
+                  help="[Optional] Specify which GPU to use, default='0'.")
+    @click.option("--epochs",
+                  default=25,
+                  type=int,
+                  help="Specify the number of epochs you want to run the experiment for.")
+    @click.option("--batch-size",
+                  default=4,
+                  type=int,
+                  help="Specify the batch size for the dataloader.")
 
     if isinstance(eval(exp_directory), list):
         exp_directories = eval(exp_directory)
